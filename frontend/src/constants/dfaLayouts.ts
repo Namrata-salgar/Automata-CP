@@ -106,19 +106,10 @@ const DATE_LAYOUT: DFALayout = {
 
 const BINARY_LAYOUT: DFALayout = {
   nodes: [
-    node(0, 'Start', 80, 200, { start: true }),
-    node(1, '0', 250, 200, { accept: true }),
-    node(2, '0b', 420, 120),
-    node(3, 'Bits', 590, 200, { accept: true }),
-    node(4, 'Dead', 340, 40, { dead: true }),
+    node(0, 'q0', 500, 200, { start: true, accept: true }),
   ],
   edges: [
-    { from: 0, to: 1, label: '0' },
-    { from: 0, to: 3, label: '1' },
-    { from: 1, to: 1, label: '0/1' },
-    { from: 1, to: 2, label: 'b/B' },
-    { from: 2, to: 3, label: '0,1' },
-    { from: 3, to: 3, label: '0/1' },
+    { from: 0, to: 0, label: '0/1' },
   ],
 };
 

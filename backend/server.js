@@ -38,9 +38,9 @@ app.get('/formats', (req, res) => {
             invalid_examples: ['31/02/2024', '00/13/2024', '2024/01/01', '1/1/24']
         },
         {
-            key: 'binary', label: 'Binary Number', pattern: '[0b][01]+',
-            valid_examples: ['101010', '0', '1', '0b1101', '0B0101'],
-            invalid_examples: ['102', '1a0', '0b', '0b2']
+            key: 'binary', label: 'Binary Number', pattern: '(0|1)*',
+            valid_examples: ['101010', '0', '1', '1101', ''],
+            invalid_examples: ['102', '1a0', '0b10', 'abc']
         },
         {
             key: 'hex', label: 'Hexadecimal Number', pattern: '0x[0-9a-fA-F]+',

@@ -231,27 +231,9 @@ const createDateValidator = () => {
 };
 
 const createBinaryValidator = () => {
-    const dfa = new DFA(5, 0, [1, 3]);
-    dfa.addTransition(0, '0', 1);
-    dfa.addTransition(0, '1', 3);
-    dfa.setDefaultTransition(0, 4);
-
-    dfa.addTransition(1, '0', 1);
-    dfa.addTransition(1, '1', 3);
-    dfa.addTransition(1, 'b', 2);
-    dfa.addTransition(1, 'B', 2);
-    dfa.setDefaultTransition(1, 4);
-
-    dfa.addTransition(2, '0', 3);
-    dfa.addTransition(2, '1', 3);
-    dfa.setDefaultTransition(2, 4);
-
-    dfa.addTransition(3, '0', 3);
-    dfa.addTransition(3, '1', 3);
-    dfa.setDefaultTransition(3, 4);
-
-    dfa.setDefaultTransition(4, 4);
-
+    const dfa = new DFA(1, 0, [0]);
+    dfa.addTransition(0, '0', 0);
+    dfa.addTransition(0, '1', 0);
     return { validate: (input) => dfa.simulate(input) };
 };
 
