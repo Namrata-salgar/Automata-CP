@@ -1,20 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-const { execFile } = require('child_process');
 const path = require('path');
+const validator = require('./validator');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const PORT = 8080;
-const VALIDATOR_EXE = path.join(__dirname, 'validator.exe');
 
 // GET /health
 app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
-        server: 'Node/DFA Validator Backend',
+        server: 'Node DFA Validator Backend',
         version: '1.0.0',
         validators: ['email', 'ipv4', 'date', 'binary', 'hex', 'name', 'phone']
     });
@@ -76,26 +75,16 @@ app.post('/validate', (req, res) => {
         });
     }
 
-    // Call the compiled C++ validator CLI
-    execFile(VALIDATOR_EXE, [format, input], { encoding: 'utf-8' }, (error, stdout, stderr) => {
-        // Output format from C++ CLI is raw JSON
-        if (stdout) {
-            try {
-                const result = JSON.parse(stdout);
-                return res.json(result);
-            } catch (e) {
-                console.error("Failed to parse validator JSON output:", stdout);
-                return res.status(500).json({ error: "Validator returned invalid JSON format" });
-            }
-        } else {
-            console.error("Validator CLI execution failed:", stderr || error);
-            // Check return code if it's 2 (unknown format)
-            if (error && error.code === 2) {
-                return res.status(400).json({ error: "Unknown format: " + format });
-            }
-            return res.status(500).json({ error: "Internal validation error!" });
+    try {
+        const result = validator.validate(format, input);
+        return res.json(result);
+    } catch (e) {
+        if (e.message.startsWith('Unknown format')) {
+            return res.status(400).json({ error: e.message });
         }
-    });
+        console.error("Validation error:", e);
+        return res.status(500).json({ error: "Internal validation error!" });
+    }
 });
 
 app.listen(PORT, '0.0.0.0', () => {

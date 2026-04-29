@@ -37,10 +37,10 @@ const EMAIL_LAYOUT: DFALayout = {
   ],
   edges: [
     { from: 0, to: 1, label: 'a-z,0-9' },
-    { from: 1, to: 1, label: 'a-z,._' },
+    { from: 1, to: 1, label: 'a-z 0-9 _' },
     { from: 1, to: 2, label: '@' },
     { from: 2, to: 3, label: 'a-z' },
-    { from: 3, to: 3, label: 'a-z,-' },
+    { from: 3, to: 3, label: 'a-z 0-9 -' },
     { from: 3, to: 4, label: '.' },
     { from: 4, to: 5, label: 'a-z' },
     { from: 5, to: 5, label: 'a-z' },
@@ -115,11 +115,10 @@ const BINARY_LAYOUT: DFALayout = {
   edges: [
     { from: 0, to: 1, label: '0' },
     { from: 0, to: 3, label: '1' },
-    { from: 1, to: 1, label: '0' },
-    { from: 1, to: 3, label: '1' },
+    { from: 1, to: 1, label: '0/1' },
     { from: 1, to: 2, label: 'b/B' },
     { from: 2, to: 3, label: '0,1' },
-    { from: 3, to: 3, label: '0,1' },
+    { from: 3, to: 3, label: '0/1' },
   ],
 };
 
@@ -135,7 +134,7 @@ const HEX_LAYOUT: DFALayout = {
     { from: 0, to: 1, label: '0' },
     { from: 1, to: 2, label: 'x/X' },
     { from: 2, to: 3, label: '0-9,a-f' },
-    { from: 3, to: 3, label: '0-9,a-f' },
+    { from: 3, to: 3, label: '0-9 a-f' },
   ],
 };
 
@@ -148,7 +147,7 @@ const NAME_LAYOUT: DFALayout = {
   ],
   edges: [
     { from: 0, to: 1, label: 'A-Z' },
-    { from: 1, to: 1, label: 'a-z,A-Z' },
+    { from: 1, to: 1, label: 'a-z A-Z' },
     { from: 1, to: 2, label: 'space/-' },
     { from: 2, to: 1, label: 'A-Z' },
   ],
@@ -172,6 +171,8 @@ const PHONE_LAYOUT: DFALayout = {
   ],
 };
 
+
+
 export const DFA_LAYOUTS: Record<string, DFALayout> = {
   email: EMAIL_LAYOUT,
   ipv4: IPV4_LAYOUT,
@@ -181,3 +182,19 @@ export const DFA_LAYOUTS: Record<string, DFALayout> = {
   name: NAME_LAYOUT,
   phone: PHONE_LAYOUT,
 };
+
+// Add explicit dead state transitions
+Object.values(DFA_LAYOUTS).forEach((layout) => {
+  const deadNode = layout.nodes.find(n => n.isDead);
+  if (deadNode) {
+    layout.nodes.forEach(node => {
+      if (!node.isDead && !node.isAccept) {
+        // Add if not already exists
+        const exists = layout.edges.some(e => e.from === node.id && e.to === deadNode.id);
+        if (!exists) {
+          layout.edges.push({ from: node.id, to: deadNode.id, label: 'other', isDeadEdge: true } as any);
+        }
+      }
+    });
+  }
+});

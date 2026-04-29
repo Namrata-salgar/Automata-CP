@@ -6,7 +6,6 @@
 #include "HexValidator.h"
 #include "NameValidator.h"
 #include "PhoneValidator.h"
-
 ValidatorFactory::ValidatorFactory() {
     validators_["email"]  = std::make_unique<EmailValidator>();
     validators_["ipv4"]   = std::make_unique<IPv4Validator>();

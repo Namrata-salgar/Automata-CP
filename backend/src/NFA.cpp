@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <algorithm>
 
+constexpr char NFA::EPSILON;
+
 // ─────────────────────────────────────────────────────────────
 //  Constructor
 // ─────────────────────────────────────────────────────────────

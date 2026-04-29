@@ -3,7 +3,6 @@ import FormatSelector from './components/FormatSelector';
 import InputField from './components/InputField';
 import ResultBanner from './components/ResultBanner';
 import DFAGraph from './components/DFAGraph';
-import TraceTimeline from './components/TraceTimeline';
 import HistoryPanel from './components/HistoryPanel';
 import { useValidation } from './hooks/useValidation';
 import { useHistory } from './hooks/useHistory';
@@ -112,14 +111,7 @@ export default function App() {
         <ResultBanner result={result} error={error} input={inputValue} />
 
         {result && (
-          <div className="visualization-grid">
-            <section className="section section--graph">
-              <DFAGraph format={selectedFormat} trace={result.trace} />
-            </section>
-            <section className="section section--trace">
-              <TraceTimeline trace={result.trace} input={inputValue} />
-            </section>
-          </div>
+          <DFAGraph format={selectedFormat} trace={result.trace} input={inputValue} />
         )}
 
         <section className="section section--history">
